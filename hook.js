@@ -52,6 +52,25 @@ const execHook = ( hookCommand ) => new Promise ( ( resolve , reject ) => {
 
 })
 
+const execHooks = ( commands , callback ) => {
+
+  if ( commands.length === 0 )
+    callback ()
+  else{
+    const next = commands[0]
+    const label = 'WPShellHooks('+next+')'
+    console.time(label)
+    execHook ( next )
+      .then ( result => {
+        console.timeEnd(label)
+        execHooks ( commands.slice(1) , callback )
+      } )
+      .catch ( callback )
+  }
+
+}
+
 module.exports = {
-  execHook
+  execHook,
+  execHooks
 }
